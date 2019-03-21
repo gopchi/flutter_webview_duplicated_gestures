@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <style>
+    /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+    #map {
+      height: 100%;
+    }
+
+    /* Optional: Makes the sample page fill the window. */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+<div id="map"></div>
+<script>
+    var map;
+    var marker;
+
+
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 42.6977, lng: 23.3219 }, /** set user coordinates **/
+        zoom: 17,
+        disableDefaultUI: true,
+        styles: [
+          {
+            featureType: "poi",
+            stylers: [{ visibility: "off" }]
+          },
+          {
+            featureType: "transit",
+            elementType: "labels.icon",
+            stylers: [{ visibility: "off" }]
+          }
+        ]
+      });
+
+
+      map.addListener("click", function (e) {
+        console.log({
+          lat: e.latLng.lat(),
+          lng: e.latLng.lng()
+        });
+
+
+        let cityCircle = new google.maps.Circle({
+          strokeColor: "#FF0000",
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: "#FF0000",
+          fillOpacity: 0.25,
+          map: map,
+          center: { lat: e.latLng.lat(), lng: e.latLng.lng() },
+          radius: 350 /* Radius in meters */,
+          id: "Firebase_UID_here" /* Firebase Unique Id */
+        });
+
+        google.maps.event.addListener(cityCircle, "click", function () {
+          this.setMap(null);
+        });
+      });
+
+    }
+
+
+    function setPosition(latitude, longitude) {
+      console.log('called setPosition');
+
+      if (map) {
+
+        centerMap(latitude, longitude);
+
+        if (!marker) {
+          marker = new google.maps.Marker({
+            position: { lat: latitude, lng: longitude }, /** set user coordinates **/
+            map: map,
+            icon: {
+              url: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOzSURBVGhD7ZlLTxRBEMeJBz2a+Dyp4aRGv4Dxjd9AhZuJ7gwjHvwKop/AGKMfwNfBRJRlZsB4EYHoARAQvRr0bpS1ezmx/qu3Vnt6mnV2p2eVZH9JHZiqrerqR/WDni5d/lN671dquvDnzUM3gU7jj1Z7vVhc8yLxxA/lvJkAffND8diPxBDZ8s/+LcPDtS1o2AAa/QaNW/cjWWtIKgFNV7cVk14o+8kHu+ssflTtQ0M+JhqmSdMENEESy4OxPM1ui+d6vL4NvX7X1hhdsiaghEYEPsk3hymGSyM/dnqRfGdtBAS6OfToDW+sesZMgL6hkcOweW/7LQmm4ow38X0Hh3PLlXh1Nxq3lAqM3kOjRkrjawfZVGEmwJ8VXrh2mH6T8qX8yUXqKDZ1Aw2tree9UHwuleUxNkvQLIEGQSxPoNdXUn4Rq/9pbSub5QcO76WChGKKRoVN2mboZWUPRnHa9E9rgk3yUQqrZ+tl749zKpsue6g+wmJGj0Exc1cnVecj8Ul3TNPGRc+bkE80+ksyllzKtU9gGAd0h7xgj7PaObQmEvEgg5G4wOrWoXluOHzGqsJApz1PxhSTrGoNOq+Ycz8orx1idWFQidVjUhuCstzP6uyoQ5fmCFNnjlWFg3gLemwkEbAqO5g+j3QntMOyqnBQkW7qsdGZD1mVHfR4YsuncsqqwinF1XN6bMgsq5pj7p4bCZs7xxbLJmyexmZsEzZ3ji2WTdg8jc3YJmzuHFssm7B5GpuxTdjcObZYNmHz5mzKRaxjllG6jLCqcFA2byViR+IBq7KDBK4mnIRynlWFg1iLydhtbGS2owRt86wujNJY5agek9pweULuY3Vr0Llfd4Z1McKqwkCM0UTMULxmVev4sbioOyOhIy+rnVMK5SkzHhI4z+rWqV9o5IeEU1w6irjQeKOVvThvfU3Gkou5H77oWmeuBfw97fINR10pQ/nWiLHuj8mTbJIP9ET6IQtJ0IWcTdpG9bx5H67LHTbJD13gsbjSzyqRWNloTWTZPemxKzVtyC9Gw+mzChGUV3el6nMjID1SjVeOsKmiWQJUKvGbFzZfFCN49W07m7qFnv02GO6GLNQvI9U+M4H68UDtsMnbliaoOFOFPS02oAWn1oS5sA0xE7DZ/Bb4wojcdlkY/gpVJ8zVZWuDIJkToGnpqtq0iton1GYnJs0RaZqAsqV/cIjzueu8K7CLHkDDAjSKTrGzlgRm6VTpRz8H2z7bdBIzAf68eegm0KVLJ+jp+QVdTYQvA7evXAAAAABJRU5ErkJggg==',
+              // This marker is 48 pixels wide by 48 pixels high.
+              size: new google.maps.Size(48, 48),
+              // The origin for this image is (0, 0).
+              origin: new google.maps.Point(0, 0),
+              // The anchor for this image is the center of the target at (24, 24).
+              anchor: new google.maps.Point(24, 24)
+            }
+          });
+        } else {
+          let newLatLng = new google.maps.LatLng(latitude, longitude);
+          marker.setPosition(newLatLng);
+        }
+
+      }
+
+    }
+
+    function centerMap(lat, lng) {
+      var center = new google.maps.LatLng(lat, lng);
+      // using global variable:
+      map.panTo(center);
+      map.setZoom(17);
+    }
+
+
+  </script>
+<script src="https://maps.googleapis.com/maps/api/js?key=API_KEY&callback=initMap"
+        async defer></script>
+</body>
+
+</html>
