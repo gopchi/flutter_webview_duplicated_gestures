@@ -1,0 +1,1 @@
+# flutter_webview_duplicated_gestures
