@@ -1,16 +1,7 @@
-# webview_test
+# Explanation
 
-A new Flutter application.
+In the current app, we have integrated a WebView with a static HTML file loading a GoogleMap inside of it. We wanted to create a new circle on each click on the map so there is an event listener on the HTML side for handling the click events.
 
-## Getting Started
+On the Dart side we have a Stack and two Positioned elements from which the second one is overlaping the WebView. We attached an onPressed handler which triggers a javascript eval on the WebView, but sometimes the click event is propagated to the map below and even though it works and the js is evals, a circle is created, too.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+**In order the example to work please add you own Google Maps Javascript API KEY in assets/index.html**
